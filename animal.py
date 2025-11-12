@@ -29,12 +29,35 @@ class SeverityLevel(Enum):
     CRITICAL = 4
 
 class HealthIssue:
-    def __init__(self, description, severity):
+    def __init__(self, description, severity, treatment_plan=""):
         self.description = description
         self.severity = severity
         self.reported_on = date.today()
+        self.treatment_plan = treatment_plan
         self.status = "OPEN"
+        self.notes = []
+
+    def start_treatment(self, plan):
+        self.treatment_plan = plan
+        self.status = "TREATMENT"
+
+    def close(self, note=""):
+        if note:
+            self.notes.append(note)
+        self.status = "CLOSED"
 
 class HealthRecord:
     def __init__(self):
         self.issues = []
+
+    def open_issue(self, description, severity):
+        new_issue = HealthIssue(description, severity)
+        self.issues.append(new_issue)
+        return new_issue
+
+    def active_issues(self):
+        return [i for i in self.issues if i.status != "CLOSED"]
+
+    def is_under_treatment(self):
+        return any(i.status == "TREATMENT" for i in self.issues)
+
