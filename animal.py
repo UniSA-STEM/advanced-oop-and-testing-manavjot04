@@ -8,6 +8,31 @@ This is my own work as defined by the University's Academic Integrity Policy.
 '''
 from enum import Enum, auto
 from datetime import date
+from abc import ABC, abstractmethod
+
+class Animal(ABC):
+    def __init__(self, name, species, age, diet, daily_ration_kg, required_environment):
+        self.name = name
+        self.species = species
+        self.age = age
+        self.diet = diet
+        self.daily_ration_kg = daily_ration_kg
+        self.required_environment = required_environment
+        self.health = HealthRecord()
+        self.enclosure = None
+
+    def eat(self):
+        return f"{self.name} eats {self.daily_ration_kg}kg of food."
+
+    def sleep(self):
+        return f"{self.name} is resting."
+
+    def can_be_moved(self):
+        return not self.health.is_under_treatment()
+
+    @abstractmethod
+    def make_sound(self):
+        pass
 
 class DietType(Enum):
     HERBIVORE = auto()
