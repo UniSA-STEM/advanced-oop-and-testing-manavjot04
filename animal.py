@@ -86,3 +86,15 @@ class HealthRecord:
     def is_under_treatment(self):
         return any(i.status == "TREATMENT" for i in self.issues)
 
+class Mammal(Animal):
+    def make_sound(self):
+        return f"{self.name} roars."
+
+class Reptile(Animal):
+    def make_sound(self):
+        return f"{self.name} hisses."
+
+class Bird(Animal):
+    def make_sound(self):
+        return f"{self.name} chirps."
+
