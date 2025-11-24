@@ -1,6 +1,18 @@
+'''
+File: test_zoo.py
+Description: This validates the core functionality of the Zoo Management System, ensuring enclosure logic, 
+animal movement rules, health management and the staff permissions operate correctly.
+Author: Manavjot Singh Dutta
+ID: 110430330
+Username: DUTMY005
+This is my own work as defined by the University's Academic Integrity Policy.
+'''
+
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# This allows the imports from the parent directory
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
 
 import pytest
 from animal import Mammal, Reptile, Bird, DietType, EnvironmentType, SeverityLevel
@@ -10,6 +22,7 @@ from staff import Zookeeper, Veterinarian
 
 @pytest.fixture
 def setup_zoo():
+# Test fixture used to initialise a clean zoo state before each test.
     lion_enc = Enclosure("Savannah", "Lion", EnvironmentType.SAVANNAH, 2)
     reptile_enc = Enclosure("Reptile House", "Python", EnvironmentType.REPTILE_HOUSE, 1)
 
@@ -27,18 +40,21 @@ def setup_zoo():
 
 
 def test_correct_enclosure_assignment(setup_zoo):
+# To test if the animals can be added to the correct enclosure.
     lion_enc, _, simba, _, _, _ = setup_zoo
     lion_enc.add_animal(simba)
     assert simba in lion_enc.animals
 
 
 def test_species_violation(setup_zoo):
+# To test that the enclosure should reject wrong species.
     lion_enc, _, _, sly, _, _ = setup_zoo
     with pytest.raises(ValueError):
         lion_enc.add_animal(sly)
 
 
 def test_environment_violation(setup_zoo):
+# To test that enclosure should reject animals with incompatible environment needs.
     lion_enc, _, _, _, _, _ = setup_zoo
     peng = Bird("Pebbles", "Penguin", 3, DietType.CARNIVORE, 1.2, EnvironmentType.AVIARY)
 
@@ -47,6 +63,7 @@ def test_environment_violation(setup_zoo):
 
 
 def test_capacity_limits(setup_zoo):
+# To test that enclosure capacity must not be exceeded.
     lion_enc, _, simba, _, _, _ = setup_zoo
     lion_enc.add_animal(simba)
 
@@ -60,6 +77,7 @@ def test_capacity_limits(setup_zoo):
 
 
 def test_keeper_feeding(setup_zoo):
+# To test the Zookeeper can feed assigned animals only.         
     lion_enc, _, simba, _, keeper, _ = setup_zoo
     lion_enc.add_animal(simba)
     message = keeper.feed(simba)
@@ -68,6 +86,7 @@ def test_keeper_feeding(setup_zoo):
 
 
 def test_vet_starts_treatment(setup_zoo):
+# To test that veterinarian can diagnose issues and put animals into Treatment state.
     lion_enc, _, simba, _, _, vet = setup_zoo
     lion_enc.add_animal(simba)
 
@@ -78,6 +97,7 @@ def test_vet_starts_treatment(setup_zoo):
 
 
 def test_movement_blocked_during_treatment(setup_zoo):
+# To test that animals under treatment cannot be moved out of an enclosure.
     lion_enc, _, simba, _, _, vet = setup_zoo
     lion_enc.add_animal(simba)
 
@@ -88,6 +108,7 @@ def test_movement_blocked_during_treatment(setup_zoo):
 
 
 def test_discharge_closes_issues(setup_zoo):
+# To test that after discharge, all active treatment issues should be closed.
     lion_enc, _, simba, _, _, vet = setup_zoo
     lion_enc.add_animal(simba)
 
